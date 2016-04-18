@@ -1,0 +1,163 @@
+CREATE TABLE Mannschaft (
+ bezeichnung VARCHAR(255) NOT NULL,
+ klasse VARCHAR(255),
+ naechstes_spiel DATE NOT NULL
+);
+
+ALTER TABLE Mannschaft ADD CONSTRAINT PK_Mannschaft PRIMARY KEY (bezeichnung);
+
+
+CREATE TABLE Person (
+ persnr INT NOT NULL,
+ vname VARCHAR(255) NOT NULL,
+ nname VARCHAR(255) NOT NULL,
+ geschlecht VARCHAR(255) NOT NULL,
+ gebdat DATE NOT NULL
+);
+
+ALTER TABLE Person ADD CONSTRAINT PK_Person PRIMARY KEY (persnr);
+
+
+CREATE TABLE Spieler (
+ persnr INT NOT NULL,
+ position VARCHAR(255) NOT NULL,
+ gehalt DECIMAL(20) NOT NULL,
+ von DATE NOT NULL,
+ bis DATE NOT NULL
+);
+
+ALTER TABLE Spieler ADD CONSTRAINT PK_Spieler PRIMARY KEY (persnr);
+
+
+CREATE TABLE SpielerTaetigkeit (
+ persnr INT NOT NULL,
+ bezeichnung VARCHAR(255) NOT NULL,
+ istkapitaen VARCHAR(255) NOT NULL,
+ nummer INT NOT NULL
+);
+
+ALTER TABLE SpielerTaetigkeit ADD CONSTRAINT PK_SpielerTaetigkeit PRIMARY KEY (persnr,bezeichnung);
+
+
+CREATE TABLE spielt (
+ persnr INT NOT NULL,
+ dauer TIME(10) NOT NULL
+);
+
+ALTER TABLE spielt ADD CONSTRAINT PK_spielt PRIMARY KEY (persnr);
+
+
+CREATE TABLE Standort (
+ sid INT NOT NULL,
+ land VARCHAR(255) NOT NULL,
+ plz INT NOT NULL,
+ ort VARCHAR(255) NOT NULL
+);
+
+ALTER TABLE Standort ADD CONSTRAINT PK_Standort PRIMARY KEY (sid);
+
+
+CREATE TABLE Trainer (
+ persnr INT NOT NULL,
+ gehalt DECIMAL(255) NOT NULL,
+ von DATE NOT NULL,
+ bis DATE NOT NULL
+);
+
+ALTER TABLE Trainer ADD CONSTRAINT PK_Trainer PRIMARY KEY (persnr);
+
+
+CREATE TABLE TrainerTaetigkeit (
+ persnr INT NOT NULL,
+ bezeichnung VARCHAR(255) NOT NULL,
+ ist_chef_trainier VARCHAR(255) NOT NULL,
+ ist_assistent VARCHAR(255) NOT NULL
+);
+
+ALTER TABLE TrainerTaetigkeit ADD CONSTRAINT PK_TrainerTaetigkeit PRIMARY KEY (persnr,bezeichnung);
+
+
+CREATE TABLE Angestellter (
+ persnr INT NOT NULL,
+ gehalt DECIMAL(255) NOT NULL,
+ ueberstunden INT NOT NULL,
+ e_mail VARCHAR(255) NOT NULL
+);
+
+ALTER TABLE Angestellter ADD CONSTRAINT PK_Angestellter PRIMARY KEY (persnr);
+
+
+CREATE TABLE Mitglied (
+ persnr INT NOT NULL,
+ beitrag VARCHAR(255) NOT NULL
+);
+
+ALTER TABLE Mitglied ADD CONSTRAINT PK_Mitglied PRIMARY KEY (persnr);
+
+
+CREATE TABLE Spiel (
+ datum CHAR(10) NOT NULL,
+ persnr INT NOT NULL,
+ gegner VARCHAR(255) NOT NULL,
+ ergebnis VARCHAR(255) NOT NULL,
+ bezeichnung VARCHAR(255) NOT NULL
+);
+
+ALTER TABLE Spiel ADD CONSTRAINT PK_Spiel PRIMARY KEY (datum,persnr);
+
+
+CREATE TABLE Fanclub (
+ name CHAR(10) NOT NULL,
+ persnr INT NOT NULL,
+ gegruendet DATE NOT NULL,
+ sid INT NOT NULL
+);
+
+ALTER TABLE Fanclub ADD CONSTRAINT PK_Fanclub PRIMARY KEY (name,persnr);
+
+
+CREATE TABLE betreut (
+ name CHAR(10) NOT NULL,
+ persnr INT NOT NULL,
+ anfang DATE NOT NULL,
+ ende DATE NOT NULL
+);
+
+ALTER TABLE betreut ADD CONSTRAINT PK_betreut PRIMARY KEY (name,persnr);
+
+
+ALTER TABLE Spieler ADD CONSTRAINT FK_Spieler_0 FOREIGN KEY (persnr) REFERENCES Person (persnr);
+
+
+ALTER TABLE SpielerTaetigkeit ADD CONSTRAINT FK_SpielerTaetigkeit_0 FOREIGN KEY (persnr) REFERENCES Spieler (persnr);
+ALTER TABLE SpielerTaetigkeit ADD CONSTRAINT FK_SpielerTaetigkeit_1 FOREIGN KEY (bezeichnung) REFERENCES Mannschaft (bezeichnung);
+
+
+ALTER TABLE spielt ADD CONSTRAINT FK_spielt_0 FOREIGN KEY (persnr) REFERENCES Spieler (persnr);
+
+
+ALTER TABLE Trainer ADD CONSTRAINT FK_Trainer_0 FOREIGN KEY (persnr) REFERENCES Person (persnr);
+
+
+ALTER TABLE TrainerTaetigkeit ADD CONSTRAINT FK_TrainerTaetigkeit_0 FOREIGN KEY (persnr) REFERENCES Trainer (persnr);
+ALTER TABLE TrainerTaetigkeit ADD CONSTRAINT FK_TrainerTaetigkeit_1 FOREIGN KEY (bezeichnung) REFERENCES Mannschaft (bezeichnung);
+
+
+ALTER TABLE Angestellter ADD CONSTRAINT FK_Angestellter_0 FOREIGN KEY (persnr) REFERENCES Person (persnr);
+
+
+ALTER TABLE Mitglied ADD CONSTRAINT FK_Mitglied_0 FOREIGN KEY (persnr) REFERENCES Person (persnr);
+
+
+ALTER TABLE Spiel ADD CONSTRAINT FK_Spiel_0 FOREIGN KEY (persnr) REFERENCES spielt (persnr);
+ALTER TABLE Spiel ADD CONSTRAINT FK_Spiel_1 FOREIGN KEY (bezeichnung) REFERENCES Mannschaft (bezeichnung);
+
+
+ALTER TABLE Fanclub ADD CONSTRAINT FK_Fanclub_0 FOREIGN KEY (persnr) REFERENCES Mitglied (persnr);
+ALTER TABLE Fanclub ADD CONSTRAINT FK_Fanclub_1 FOREIGN KEY (sid) REFERENCES Standort (sid);
+
+
+ALTER TABLE betreut ADD CONSTRAINT FK_betreut_0 FOREIGN KEY (name,persnr) REFERENCES Fanclub (name,persnr);
+ALTER TABLE betreut ADD CONSTRAINT FK_betreut_1 FOREIGN KEY (persnr) REFERENCES Angestellter (persnr);
+
+
